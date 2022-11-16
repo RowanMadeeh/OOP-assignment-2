@@ -143,7 +143,6 @@ BigReal BigReal::operator + (BigReal& other)
 
     if(after.getNumber().length()!=other.after.getNumber().length())
     {
-
         if(after.getNumber().length()<other.after.getNumber().length())
         {
             after0s+=after.sign();
@@ -178,7 +177,6 @@ BigReal BigReal::operator + (BigReal& other)
         sum_after.setNumber(spare_after);
 
         sum_before = carrypos + sum_before;
-
     }
 
     else if(spare_after.length()>length && sum_after.sign()=='-')
@@ -241,7 +239,6 @@ BigReal BigReal::operator - (BigReal& other)
         other.after.setSign('-');
     }
     return *this + other;
-
 }
 
 ostream &operator << (ostream& out, BigReal& n)

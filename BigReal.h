@@ -48,5 +48,4 @@ public:
     friend istream& operator >> (istream& out, BigReal& num);
 
     void assign(string realNumber);
-
 };

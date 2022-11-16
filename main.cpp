@@ -15,9 +15,9 @@ int main()
     cout<<n2.after<<endl;
 */
 
-    BigReal k("0");
-    BigReal h("00002.1111100");
-    BigReal i = k-h;
+    BigReal k("-0000000150.500000");
+    BigReal h("-000000000000.011");
+    BigReal i=k-h;
     cout<<i<<endl;
     return 0;
 }

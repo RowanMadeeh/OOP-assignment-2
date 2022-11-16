@@ -329,3 +329,4 @@ BigReal &BigReal::operator = (BigReal &&other)
     BigReal a(num);
     *this = a;
 }
+//hi

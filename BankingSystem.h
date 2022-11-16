@@ -9,19 +9,23 @@ class BankingApplication
 {
 protected:
 
-    BankAccount* accounts[10];
-    SavingsBankAccount* S_accounts[10];
-    Client* clients[10];
+    vector <BankAccount*> accounts;
+    vector <SavingsBankAccount*> S_accounts;
+    vector <Client*> clients;
 
 public:
 
     BankingApplication();
+
+    void loadaccounts();
 
     void add_client();
 
     void list_accounts();
 
     int search_id(string id);
+
+    ~BankingApplication();
 };
 
 
@@ -90,7 +94,7 @@ public:
     int get_minimumBalance();
 };
 
-class  Client
+class Client
 {
 private:
     string name;
@@ -112,6 +116,26 @@ public:
 
     int get_counter();
 
+    void set_counter(int a)
+    {
+        counter = a;
+    }
+
     void print_clients();
+
+    string get_name()
+    {
+        return name;
+    }
+
+    string get_address()
+    {
+        return address;
+    }
+
+    string get_phonenum()
+    {
+        return phone_num;
+    }
 };
 

@@ -1,15 +1,21 @@
 #include "BankingSystem.h"
 
-int Client::counter=-1;
-
 bool mobile_check(string& n)
 {
     regex mobile_no ("(01)[1]?[2]?[0]?[5]?[0-9]{8}");
     return regex_match(n,mobile_no);
 }
 
+int Client::counter = -1;
+
 BankingApplication::BankingApplication()
 {
+    loadaccounts();
+
+    Client* assigncounter;
+
+    assigncounter->set_counter(clients.size()-1);
+
     while(true)
     {
         cout<<"Welcome to FCAI Banking Application! \n"<<
@@ -17,7 +23,7 @@ BankingApplication::BankingApplication()
             "2. List Clients and Accounts \n"<<
             "3. Withdraw Money \n"<<
             "4. Deposit Money \n"<<
-            "5. Close the program\n\n";
+            "5. Close and save\n\n";
         cout<<"Please Enter Choice =========> ";
 
         string choice;
@@ -149,7 +155,7 @@ void BankingApplication::add_client()
 
         Client* c=new Client(name,address,phone);
 
-        clients[c->get_counter()]=c;
+        clients.push_back(c);
 
         if(choice=="1")
         {
@@ -171,8 +177,8 @@ void BankingApplication::add_client()
 
             cout<<"An account was created with ID "<<acc->get_id()<<" and Starting Balance "<<acc->get_balance()<<"L.E.\n\n";
 
-            accounts[c->get_counter()]=acc;
-            S_accounts[c->get_counter()]=s_acc;
+            accounts.push_back(acc);
+            S_accounts.push_back(s_acc);
             break;
         }
         else if(choice=="2")
@@ -195,8 +201,8 @@ void BankingApplication::add_client()
 
             cout<<"An account was created with ID "<<s_acc->get_id()<<" and Starting Balance "<<s_acc->get_minimumBalance()<<"L.E.\n\n";
 
-            accounts[c->get_counter()]=acc;
-            S_accounts[c->get_counter()]=s_acc;
+            accounts.push_back(acc);
+            S_accounts.push_back(s_acc);
             break;
         }
         else
@@ -330,4 +336,72 @@ int BankingApplication::search_id(string id)
         }
     }
     return -1;
+}
+
+void BankingApplication :: loadaccounts()
+{
+    ifstream File;
+    string line,file;
+    file="accounts";
+    file+=".txt";
+    File.open(file);
+    vector <string> vec;
+    while(getline(File,line))
+    {
+        vec.push_back(line);
+    }
+    for(int i=0; i<vec.size(); i+=6)
+    {
+        string name = vec[i];
+        string address = vec[i+1];
+        string phone = vec[i+2];
+        Client* c = new Client(name,address,phone);
+        clients.push_back(c);
+        string amount = vec[i+5];
+        if(vec[i+3][0]=='B')
+        {
+            BankAccount* acc = new BankAccount(stod(amount));
+            SavingsBankAccount *s_acc = new SavingsBankAccount;
+            string id = vec[i+4];
+            acc->set_id(id);
+            s_acc->set_id(id);
+            accounts.push_back(acc);
+            S_accounts.push_back(s_acc);
+        }
+        else
+        {
+            BankAccount* acc = new BankAccount;
+            SavingsBankAccount *s_acc = new SavingsBankAccount(stod(amount));
+            string id = vec[i+4];
+            acc->set_id(id);
+            s_acc->set_id(id);
+            accounts.push_back(acc);
+            S_accounts.push_back(s_acc);
+        }
+    }
+    File.close();
+}
+
+BankingApplication::~BankingApplication()
+{
+    fstream ofile;
+    ofile.open("accounts.txt");
+    for(int i=0; i<clients.size(); i++)
+    {
+        ofile << clients[i]->get_name() << '\n';
+        ofile << clients[i]->get_address() << '\n';
+        ofile << clients[i]->get_phonenum() << '\n';
+        if(S_accounts[i]->get_minimumBalance()==-1)
+        {
+            ofile << "B" << '\n';
+            ofile << accounts[i]->get_id() << '\n';
+            ofile << to_string(accounts[i]->get_balance()) << '\n';
+        }
+        else
+        {
+            ofile << "S" << '\n';
+            ofile << S_accounts[i]->get_id() << '\n';
+            ofile << to_string(S_accounts[i]->get_minimumBalance()) << '\n';
+        }
+    }
 }
